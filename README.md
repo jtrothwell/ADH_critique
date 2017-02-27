@@ -39,3 +39,12 @@ Do file for individual level regressions
 
 3. IPUMS_Census_Analysis_Ind_Data.do
 This is STATA code needed to code the CPS variables merge the industry shock files, and run the regression analysis in Table 2.
+
+SUPPLEMENTARY DATA FILES
+
+E. USITC_1997_2015_3D.csv. 
+This is U.S. International Trade Commission Data (USITC) from its Dataweb for the value of Chinese imports, measured in millions of current U.S. dollars. It is merged with the CPS data to create a measure of import exposure for individuals by industry. The data is at the 3-digit NAICS level (eg computer and electronics manufacturing, transporation equipement mfg, etc)
+
+F. ind1990_naics_xwalk.csv
+To link the USITC data to IPUMS-CPS, one needs a crosswalk between NAICS and ind1990, which is the time-consistent industry variable used in the IPUMS-CPS database. I used Dorn's files to help with the creation of this crosswalk but relied on my own judgement in some cases.
+
