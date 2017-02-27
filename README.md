@@ -26,13 +26,16 @@ It also examines 1991-2014 outcomes using various sources
 
 DATA FILES for individual level analysis, used for Table 2
 
-A. AADHP_Imports_per_Worker1999_2011.dta
+B. AADHP_Imports_per_Worker1999_2011.dta
 This matches CPS ind1990 to Acemoglu, Autor, Dorn, Hanson, and Price measurs of imports per worker
-B. Industry_Shock_USITC_Census.dta
-This matached ind1990 to USITC data on "imports per consumption" growth from China. (Those raw data are avaialble on the USITC dataweb, but you don't need to get it yourself to replicate)
-C. Need to download data from IPUMS-CPS (Annual Social and Economic Supplement).
+
+C. Industry_Shock_USITC_Census.dta
+
+This mataches ind1990 to USITC data on "imports per consumption" growth from China. (Those raw data are avaialble on the USITC dataweb, but you don't need to get it yourself to replicate)
+
+D. Need to download data from IPUMS-CPS (Annual Social and Economic Supplement).
 
 Do file for individual level regressions
 
-1. IPUMS_Census_Analysis_Ind_Data.do
+3. IPUMS_Census_Analysis_Ind_Data.do
 This is STATA code needed to code the CPS variables merge the industry shock files, and run the regression analysis in Table 2.
