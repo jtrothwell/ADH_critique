@@ -222,3 +222,24 @@ dprobit long_term zind_shock_00_15_china zind_shock_00_15 china   age age2 age3 
 outreg2 using "[DIRECTORY]\Regress_predict_MFG_unemployment.xls", excel addstat(Pseudo R-squared, `e(r2_p)') 
 dprobit out_labor zind_shock_00_15_china zind_shock_00_15 china   age age2 age3 male  some assoc assoc_or_two BA postBA latin black asian [pw=wtsupp], cl(ind1990)
 outreg2 using "[DIRECTORY]\Regress_predict_MFG_unemployment.xls", excel addstat(Pseudo R-squared, `e(r2_p)') 
+
+
+****Figure 2. Manufacturing premium
+replace incwage=. if inctot==9999999
+replace incwage=. if inctot==9999998
+
+gen lnwage=ln(incwage)
+
+gen employ=1 if empstat==10 | empstat==12
+replace employ=0 if empstat!=10 & empstat!=12
+keep if employ==1
+
+gen prem=.
+set more off
+forval x = 1968/2016 {
+reg lnwage mfg age age2 age3 male  some assoc assoc_or_two BA postBA  if year==`x' [aw=wtsupp], cl(ind1990)
+replace prem=_b[mfg] if year==`x'
+}
+collapse (mean) prem [aw=wtsupp], by(year)
+sort year
+edit year prem

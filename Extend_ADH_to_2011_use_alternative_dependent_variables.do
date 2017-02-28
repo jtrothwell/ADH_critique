@@ -1,7 +1,7 @@
 *variables czone-d_tradeothi_pw_lag are from ADH directly;
 *other variables are added from various sources, including AADHP
 
-use [DIRECTORY]\ADH_plus_other_data.dta", clear
+use "[DIRECTORY]\ADH_plus_other_data.dta", clear
 
 **Create alternative outcome measures**
 **Note: the other data are not formatted as long like ADH's, so one still needs
@@ -36,7 +36,13 @@ gen sh_emp1991_exposed=sh_emp23_1991 +sh_emp35_1991+ sh_emp36_1991 +sh_emp39_199
 gen density_import=d_czone_imp_exp_usch_1999_2011*density
 gen xgini=Gini2014-Gini2000
 
-**2000 to recent, using AADHP's 1999-2011 imports per worker
+*******
+***REPRODUCE TABLE 4 IN ROTHWELL (2017)********
+******
+
+
+**Column1 of Table 4
+*2000 to recent, using AADHP's 1999-2011 imports per worker
 eststo clear
 *erase "[DIRECTORY]\AADHP_2000_ALT_OUTCOME.csv"
 set more off
@@ -45,7 +51,8 @@ eststo: ivregress 2sls `x' (d_czone_imp_exp_usch_1999_2011=d_czone_imp_exp_otch_
 }
 esttab using "[DIRECTORY]\AADHP_2000_ALT_OUTCOME.csv", wide b(%9.3f) se(%9.3f) star(* 0.10 ** 0.05 *** 0.01)  r2 drop(reg*) replace
 
-**2000 to recent, using QCEW-based measure of imports per worker
+**Column2 of Table 4
+**2000 to recent, using QCEW-based ADH-like measure of imports per worker
 eststo clear
 *erase "[DIRECTORY]\ADH_2000_ALT_TRADE.csv"
 set more off
@@ -54,8 +61,45 @@ eststo: ivregress 2sls `x' (Dorn_CNimp_x_exp2000_2014=NonUS_CNimp_x_exp2000_2014
 }
 esttab using "[DIRECTORY]\ADH_2000_ALT_TRADE.csv", wide b(%9.3f) se(%9.3f) star(* 0.10 ** 0.05 *** 0.01)  r2 drop(reg*) replace
 
+**Column3 of Table 4
+**2000--Measure exposure to import competition using
+*specific industry employment shares for most exposed industries
+*at SIC-level; the data are from AADHP files (i.e. County Business Patterns, adjusted/corrected for repressions).
 
-**This creates dependent variables used in the
+/*
+36	Comp Mfg
+35	Electronics Mfg
+23	Apparel Mfg
+39	Mis Mfg
+*/
+
+eststo clear
+erase "[DIRECTORY]\ADH_2000_by_Exposure_Shares.csv"
+set more off
+foreach x in med_inc_gr xlfpr xurate gr_emp gr_avg_pay gr_estab pop_gr00_14 d_mort_age_adj gr_AADHP_emp gr_AADHP_mfg gr_AADHP_nonmfg gr_nonmfg_emp gr_nonmfg_estab xout_cty xpct_own gr_residential_workers  urate2014 lnmed_hhinc2014 lnavg_pay2014 x_inc_mob_80_86 x_edu_mob84_93 {
+eststo: reg  `x' sh_emp1999_exposed l_shind_manuf_cbp l_sh_popedu_c l_sh_popfborn l_sh_empl_f l_sh_routine33 l_task_outsource reg* if yr==2000 [aw=timepwt48], cluster(statefip) 
+}
+esttab using "[DIRECTORY]\ADH_2000_by_Exposure_Shares.csv", wide b(%9.3f) se(%9.3f) star(* 0.10 ** 0.05 *** 0.01)  r2 drop(reg*) replace
+
+
+**UNPUBLISHED ROBUSTNESS CHECKS WITH DEMOGRAPHIC CONTROLS
+**2000=AADHP imports per worker
+**med_age2000 sh_bl2000 sh_wh2000 sh_lat2000 
+
+eststo clear
+*erase "[DIRECTORY]\AADHP_2000_ALT_OUTCOME_DEMO_Controls.csv"
+set more off
+foreach x in med_inc_gr xlfpr xurate gr_emp gr_avg_pay gr_estab pop_gr00_14 d_mort_age_adj gr_AADHP_emp gr_AADHP_mfg gr_AADHP_nonmfg gr_nonmfg_emp gr_nonmfg_estab xout_cty xpct_own gr_residential_workers  urate2014 lnmed_hhinc2014 lnavg_pay2014 x_inc_mob_80_86 x_edu_mob84_93 gr_prof_emp d_sh_prof_emp {
+eststo: ivregress 2sls `x' (d_czone_imp_exp_usch_1999_2011=d_czone_imp_exp_otch_1999_2011) l_shind_manuf_cbp l_sh_popedu_c l_sh_popfborn l_sh_empl_f l_sh_routine33 l_task_outsource med_age2000 sh_bl2000 sh_wh2000 sh_lat2000 reg* if yr==2000 [aw=timepwt48], cluster(statefip) 
+}
+esttab using "[DIRECTORY]\AADHP_2000_ALT_OUTCOME_DEMO_Controls.csv", wide b(%9.3f) se(%9.3f) star(* 0.10 ** 0.05 *** 0.01)  r2 drop(reg*) replace
+
+
+*******1991-2014 analysis, unstacked
+***REPRODUCES APPENDIX TABLE 2 IN ROTHWELL (2017)********
+******
+
+**This creates dependent variables used for the
 **1991-2014 period
 gen gr_emp90=(tot_cz_emp2014/ tot_cz_emp1990)-1
 gen gr_avg_pay90=((tot_cz_pay2014/tot_cz_emp2014)/(tot_cz_pay2014/tot_cz_emp1990))-1
@@ -71,3 +115,6 @@ foreach x in gr_emp90 gr_avg_pay90 gr_estab90 gr_nonmfg_emp90 gr_nonmfg_estab90 
 eststo: ivregress 2sls `x' (d_czone_imp_exp_usch_1991_2011=d_czone_imp_exp_otch_1999_2011) l_shind_manuf_cbp l_sh_popedu_c l_sh_popfborn l_sh_empl_f l_sh_routine33 l_task_outsource reg* if yr==1990 [aw=timepwt48], cluster(statefip) 
 }
 esttab using "[DIRECTORY]\AADHP_1990-2011.csv", wide b(%9.3f) se(%9.3f) star(* 0.10 ** 0.05 *** 0.01)  r2 drop(reg*) replace
+
+
+
