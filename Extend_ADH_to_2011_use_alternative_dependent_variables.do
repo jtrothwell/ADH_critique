@@ -116,5 +116,23 @@ eststo: ivregress 2sls `x' (d_czone_imp_exp_usch_1991_2011=d_czone_imp_exp_otch_
 }
 esttab using "[DIRECTORY]\AADHP_1990-2011.csv", wide b(%9.3f) se(%9.3f) star(* 0.10 ** 0.05 *** 0.01)  r2 drop(reg*) replace
 
+***REPRODUCES APPENDIX TABLE 3 IN ROTHWELL (2017)********
 
+**ADD DOMESTIC SECTOR SHOCKS FROM QCEW DATABASE
+eststo clear
+set more off
+foreach x in gr_emp90 gr_avg_pay90 gr_estab90 gr_nonmfg_emp90 gr_nonmfg_estab90   {
+eststo: ivregress 2sls `x' (d_czone_imp_exp_usch_1991_2011=d_czone_imp_exp_otch_1999_2011) Qshock90_14_emp Qshock90_14_wage  sh_wh1990 sh_bl1990 sh_lat1990 med_age90 l_shind_manuf_cbp l_sh_popedu_c l_sh_popfborn l_sh_empl_f l_sh_routine33 l_task_outsource reg* if yr==1990 [aw=timepwt48], cluster(statefip) 
+}
+esttab using "[DIRECTORY]\DOM_SHOCK_AADHP_1990-2011.csv",  b(%9.3f) se(%9.3f) star(* 0.10 ** 0.05 *** 0.01)  r2 drop(reg*) replace
+
+**ADD DOMESTIC SECTOR SHOCKS FROM QCEW DATABASE 
+* AND OCCUPATIONAL SHOCKS FROM CENSUS DATA NHGIS
+
+eststo clear
+set more off
+foreach x in gr_emp90 gr_avg_pay90 gr_estab90 gr_nonmfg_emp90 gr_nonmfg_estab90   {
+eststo: ivregress 2sls `x' (d_czone_imp_exp_usch_1991_2011=d_czone_imp_exp_otch_1999_2011) Qshock90_14_emp Qshock90_14_wage occ_shock sh_wh1990 sh_bl1990 sh_lat1990 med_age90 l_shind_manuf_cbp l_sh_popedu_c l_sh_popfborn l_sh_empl_f l_sh_routine33 l_task_outsource reg* if yr==1990 [aw=timepwt48], cluster(statefip) 
+}
+esttab using "[DIRECTORY]\DOM_IND_OCC_SHOCK_AADHP_1990-2011.csv",  b(%9.3f) se(%9.3f) star(* 0.10 ** 0.05 *** 0.01)  r2 drop(reg*) replace
 
