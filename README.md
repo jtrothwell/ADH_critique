@@ -27,7 +27,7 @@ This is the STATA code I use to re-analyze ADH's data. It is used to produce App
 
 2. Extend_ADH_to_2011_use_alternative_dependent_variables.do
 This explores the 2000 to 2014 period with alternative dependent variables using AADHP's 1999-2011 measure of import competition. Those results are published in Table 4 in Rothwell 2017. 
-It also examines 1991-2014 outcomes using various sources; those results are published as Appendix Table 2. The code also shows the  robustness checks (adding demographic controls), which were not published as tables but described in the text.
+It also examines 1991-2014 outcomes using various sources; those results are published as Appendix Tables 2 and 3. The code also shows the  robustness checks (adding demographic controls), which were not published as tables but described in the text. Appendix Table 3 code compares domestic shocks to import shocks; the domestic shock data are provided in ADH_plus_other_data.dta.
 
 DATA FILES for individual level analysis, used for Table 2
 
@@ -44,6 +44,9 @@ Do file for individual level regressions
 
 3. IPUMS_Census_Analysis_Ind_Data.do
 This is STATA code needed to code the CPS variables merge the industry shock files, and run the regression analysis in Table 2.
+
+4. Replicate_ADH_with_interactions.do
+This is STATA code to show what happens when all right-hand-side variables used in original ADH analysis are interacted with the time period dummy variable and included in the model.
 
 SUPPLEMENTARY DATA FILES
 
